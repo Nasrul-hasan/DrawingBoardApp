@@ -11,18 +11,23 @@ let drawing = false;
 let currentStroke = [];
 let lastPoint = null;
 let currentTool = "pen";
+let savedStrokes = [];
 
 function resizeCanvas() {
     const rect = canvas.getBoundingClientRect();
 
-    const imageData = ctx.getImageData(0, 0, canvas.width || 1, canvas.height || 1);
-
     canvas.width = rect.width;
     canvas.height = rect.height;
 
-    if (imageData.width > 1 && imageData.height > 1) {
-        ctx.putImageData(imageData, 0, 0);
-    }
+    redrawAllStrokes();
+}
+
+function redrawAllStrokes() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    savedStrokes.forEach(stroke => {
+        drawFullStroke(stroke);
+    });
 }
 
 resizeCanvas();
@@ -138,6 +143,10 @@ canvas.addEventListener("mouseup", () => {
 });
 
 canvas.addEventListener("mouseleave", () => {
+    if (drawing && currentStroke.length > 1) {
+        sendStroke(currentStroke);
+    }
+
     drawing = false;
 });
 
@@ -161,11 +170,15 @@ function sendStroke(points) {
         createdBy: window.boardConfig.nickname
     };
 
+    // save locally immediately so resize does not remove the user's own latest stroke
+    savedStrokes.push(stroke);
+
     connection.invoke("SendStroke", window.boardConfig.boardId.toString(), stroke)
         .catch(err => console.error(err));
 }
 
 connection.on("ReceiveStroke", (stroke) => {
+    savedStrokes.push(stroke);
     drawFullStroke(stroke);
 });
 
@@ -175,6 +188,7 @@ if (clearBoardBtn) {
 
         if (!confirmed) return;
 
+        savedStrokes = [];
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         connection.invoke("ClearBoard", window.boardConfig.boardId.toString())
@@ -183,5 +197,6 @@ if (clearBoardBtn) {
 }
 
 connection.on("BoardCleared", () => {
+    savedStrokes = [];
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 });
