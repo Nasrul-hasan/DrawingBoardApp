@@ -1,10 +1,10 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-COPY . ./
+COPY DrawingBoardApp/ ./
 
-RUN dotnet restore
-RUN dotnet publish -c Release -o /app/out
+RUN dotnet restore DrawingBoardApp.csproj
+RUN dotnet publish DrawingBoardApp.csproj -c Release -o /app/out
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
