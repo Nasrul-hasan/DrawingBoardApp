@@ -60,13 +60,13 @@ Each board acts as a shared drawing space.
 
 The project is deployed here:
 
-👉 
+👉 https://drawingboardapp.onrender.com
 
 ---
 
 ## Demo video
 
-👉 
+👉 https://drive.google.com/file/d/1teeZF5gr17YsP8RTb3_KglaK8gw8lKD4/view?usp=sharing
 
 ---
 
