@@ -1,0 +1,58 @@
+﻿@model DrawingBoardApp.ViewModels.BoardVm
+
+@{
+    ViewData["Title"] = Model.BoardName;
+    ViewData["FullWidth"] = true;
+}
+
+<div class="board-room">
+    <aside class="board-sidebar">
+        <div>
+            @* <a class="back-link" asp-controller="Home" asp-action="Index">← Back to boards</a> *@
+            <a href="/" class="back-btn">← Back to boards</a>
+
+            <div class="board-title-block">
+                <p class="eyebrow">Live Board</p>
+                <h1>@Model.BoardName</h1>
+                <p>Drawing as <strong>@Model.Nickname</strong></p>
+            </div>
+        </div>
+
+        <div class="tools-panel">
+            <button type="button" id="penBtn" class="tool-btn active-tool">✏️ Pen</button>
+            <button type="button" id="eraserBtn" class="tool-btn">🧽 Eraser</button>
+
+            <div class="tool-field">
+                <label for="colorPicker">Color</label>
+                <input type="color" id="colorPicker" value="#000000" />
+            </div>
+
+            <div class="tool-field">
+                <label for="brushSize">Size</label>
+                <input type="range" id="brushSize" min="1" max="20" value="3" />
+            </div>
+
+            <button type="button" id="clearBoardBtn" class="danger-btn">Clear Board</button>
+        </div>
+
+        <div class="hint-box">
+            <strong>Tip</strong>
+            <p>Open the same board in another tab to test realtime collaboration.</p>
+        </div>
+    </aside>
+
+    <main class="canvas-area">
+        <canvas id="boardCanvas"></canvas>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+
+<script>
+    window.boardConfig = {
+    boardId: parseInt("@Model.BoardId"),
+    nickname: "@Model.Nickname"
+    };
+</script>
+
+<script src="~/js/board.js" asp-append-version="true"></script>

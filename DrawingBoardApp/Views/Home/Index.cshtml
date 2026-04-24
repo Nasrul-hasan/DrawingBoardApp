@@ -1,0 +1,63 @@
+﻿@model DrawingBoardApp.ViewModels.HomeVm
+
+@{
+    ViewData["Title"] = "Boards";
+}
+
+<div class="landing-page">
+    <section class="hero-card">
+        <div>
+            <p class="eyebrow">Realtime Collaboration</p>
+            <h1>Collaborative Drawing Board</h1>
+            <p class="hero-text">
+                Create a board, invite others, and draw together in real time.
+                Your drawings are saved automatically and remain available later.
+            </p>
+        </div>
+
+        <form asp-controller="Boards" asp-action="Create" method="post" class="create-board-form">
+            <input type="text" name="nickname" placeholder="Your nickname" required />
+            <input type="text" name="boardName" placeholder="New board name" required />
+            <button type="submit">Create Board</button>
+        </form>
+    </section>
+
+    <section class="boards-section">
+        <div class="section-header">
+            <h2>Available Boards</h2>
+            <span>@Model.Boards.Count board(s)</span>
+        </div>
+
+        @if (!Model.Boards.Any())
+        {
+            <div class="empty-state">
+                <h3>No boards yet</h3>
+                <p>Create the first collaborative board and start drawing.</p>
+            </div>
+        }
+        else
+        {
+            <div class="board-grid">
+                @foreach (var board in Model.Boards)
+                {
+                    <div class="board-card">
+                        <div class="board-preview">
+                            <span>Board</span>
+                        </div>
+
+                        <div class="board-card-content">
+                            <h3>@board.Name</h3>
+                            <p>Created by @board.CreatedBy</p>
+
+                            <form asp-controller="Boards" asp-action="Room" method="get" class="join-form">
+                                <input type="hidden" name="id" value="@board.Id" />
+                                <input type="text" name="nickname" placeholder="Nickname" required />
+                                <button type="submit">Join</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+</div>
